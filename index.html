@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chart with Carets</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background-color: cyan;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    .chart-container {
+      position: relative;
+      width: 800px;
+      height: 400px;
+    }
+
+    .rcorners1 {
+      border-radius: 25px;
+      background: black;
+      padding: 2px;
+      width: 90px;
+      height: 17px;
+      border: 1px solid black;
+      color: white;
+      text-align: center;
+      position: absolute;
+      display: none;
+    }
+
+    @keyframes fall {
+      0% {
+        transform: translateY(-100%);
+        opacity: 0;
+      }
+
+      50% {
+        opacity: 1;
+      }
+
+      100% {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+
+    svg {
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: 0;
+    }
+
+    .vertical-label {
+      text-orientation: upright;
+      writing-mode: vertical-rl;
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      left: -40px;
+      color: black;
+      font-weight: bold;
+    }
+
+    .horizontal-label {
+      position: absolute;
+      bottom: -50px;
+      left: 50%;
+      transform: translateX(-50%);
+      color: black;
+      font-weight: bold;
+    }
+
+    .caret-y {
+      position: absolute;
+      top: -10px;
+      left: 0;
+      transform: translateX(-50%);
+      width: 0;
+      height: 0;
+      border-left: 5px solid transparent;
+      border-right: 5px solid transparent;
+      border-bottom: 10px solid black;
+    }
+
+    .caret-x {
+      position: absolute;
+      bottom: 0;
+      right: -10px;
+      transform: translateY(50%);
+      width: 0;
+      height: 0;
+      border-top: 5px solid transparent;
+      border-bottom: 5px solid transparent;
+      border-left: 10px solid black;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="chart-container">
+    <div class="vertical-label">Performance</div>
+    <svg width="800px" height="400px">
+      <!-- Lines will be dynamically added here -->
+    </svg>
+    <div style="height: 100%; border-left: 1px solid black; border-bottom: 2px solid black; position: relative;">
+      <!-- Y-axis caret -->
+      <div class="caret-y"></div>
+      <!-- X-axis caret -->
+      <div class="caret-x"></div>
+      <div id="1" class="rcorners1" style="top: 190px; left: 40px;">DOING</div>
+      <div id="2" class="rcorners1" style="top: 140px; left: 140px;">YOUR</div>
+      <div id="3" class="rcorners1" style="top: 290px; left: 240px;">BEST</div>
+      <div id="4" class="rcorners1" style="top: 240px; left: 340px;">MIGHT</div>
+      <div id="5" class="rcorners1" style="top: 190px; left: 440px;">LOOK</div>
+      <div id="6" class="rcorners1" style="top: 40px; left: 540px;">DIFFERENT</div>
+      <div id="7" class="rcorners1" style="top: 90px; left: 640px;">EACH</div>
+      <div id="8" class="rcorners1" style="top: 20px; left: 740px;">DAY</div>
+    </div>
+    <p class="horizontal-label">Time</p>
+  </div>
+
+  <script>
+    const coordinates = [
+      {id: 1, x: 85, y: 190},
+      {id: 2, x: 185, y: 140},
+      {id: 3, x: 285, y: 290},
+      {id: 4, x: 385, y: 240},
+      {id: 5, x: 485, y: 190},
+      {id: 6, x: 585, y: 40},
+      {id: 7, x: 685, y: 90},
+      {id: 8, x: 785, y: 20},
+    ];
+
+    let i = 0;
+    const interval = setInterval(() => {
+      if (i < coordinates.length) {
+        const $el = document.getElementById(coordinates[i].id);
+        if ($el) {
+          $el.style.display = 'block';
+          $el.style.animation = 'fall 0.4s ease-out forwards';
+
+          // Add line to connect points
+          if (i > 0) {
+            const prev = coordinates[i - 1];
+            const curr = coordinates[i];
+            const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+            line.setAttribute('x1', prev.x);
+            line.setAttribute('y1', prev.y);
+            line.setAttribute('x2', curr.x);
+            line.setAttribute('y2', curr.y);
+            line.setAttribute('stroke', 'black');
+            line.setAttribute('stroke-width', '2');
+            document.querySelector('svg').appendChild(line);
+          }
+        }
+        i++;
+      } else {
+        clearInterval(interval);
+      }
+    }, 500);
+  </script>
+</body>
+
+</html>
